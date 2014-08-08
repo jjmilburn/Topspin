@@ -17,6 +17,7 @@ with open('16bit.raw', 'wb') as f:
     for sample in twelveBitSamplesReader:
         #full scale and integer conversion -
         scaledInt = 8*(int(sample[0])-4095)
+        print scaledInt
         packedInt = struct.pack('h',int(sample[0]))
         f.write(packedInt)
 
