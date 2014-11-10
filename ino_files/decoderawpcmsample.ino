@@ -1,6 +1,9 @@
 #include "math.h"
 #include "application.h"
 
+SYSTEM_MODE(SEMI_AUTOMATIC); //makes it so we have to explicitly connect
+//SEMI AUTO MODE NOT YET WORKING
+
 //declare variables
 const short sampleRate = 11025;
 short curArrayIndex = 0; //max of 1102
@@ -33,10 +36,7 @@ void setup() {
     pinMode(A7, INPUT);
     
   //with wifi/spark cloud on, max speed for each loop is around 5ms (on home network)
-  //  WiFi.off();
-  //  Spark.disconnect();
-    Spark.connect();
-    Serial.begin(9600); 
+  //    Serial.begin(9600); 
     Spark.function("getCount", getCount);
     
     
@@ -56,12 +56,14 @@ int getCount(String command)
 }
 
 void loop() {
-
+counter++;
 // every 30 seconds, push diagnostic data.  In the final product, this can happen between volleys.
-if (counter>=330750){
+if  (counter>=2000){
+    //(counter>=330750){
     counter = 0;
-    WiFi.on();
-    Spark.connect();
+    if (Spark.connected() == false) {
+        Spark.connect();
+    }
     Serial.print("Connected and pushing!");
     sprintf(publishSamples,"%hi:%hi:%hi",micAL1SecSmp[0],micAL1SecSmp[512],micAL1SecSmp[1000]);
     Spark.publish("Samples",publishSamples);
